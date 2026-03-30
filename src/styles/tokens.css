@@ -1,0 +1,50 @@
+:root {
+  /* === COLORS === */
+  --color-bg:              #131313;
+  --color-surface-low:     #1C1B1B;
+  --color-surface-mid:     #242323;
+  --color-surface-high:    #353534;
+  --color-surface-highest: #404040;
+  --color-surface-lowest:  #0E0E0E;
+
+  --color-primary:         #8B0000;
+  --color-primary-dark:    #410000;
+  --color-ember:           #C45E1A;
+  --color-gold:            #C9A84C;
+  --color-cream:           #F5F0E8;
+  --color-muted:           #888888;
+  --color-error:           #FFB4AB;
+
+  --color-outline:         rgba(90, 64, 60, 0.15);
+  --color-shadow-crimson:  rgba(139, 0, 0, 0.10);
+  --color-outline-border:  rgba(170, 137, 132, 0.20);
+
+  /* === TYPOGRAPHY === */
+  --font-display:   'Bebas Neue', 'Epilogue', sans-serif;
+  --font-headline:  'Epilogue', sans-serif;
+  --font-script:    'Dancing Script', cursive;
+  --font-body:      'Inter', sans-serif;
+  --font-label:     'Space Grotesk', monospace;
+
+  /* === SPACING === */
+  --space-1:  0.35rem;
+  --space-2:  0.7rem;
+  --space-3:  1.05rem;
+  --space-4:  1.4rem;
+  --space-6:  2.1rem;
+  --space-8:  2.8rem;
+  --space-12: 4.2rem;
+  --space-16: 5.6rem;
+  --space-20: 7rem;
+  --space-24: 8.5rem;
+
+  /* === BORDERS === */
+  --radius: 0px;
+
+  /* === TRANSITIONS === */
+  --ease-heavy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-predator: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration-slow: 800ms;
+  --duration-med: 500ms;
+  --duration-fast: 300ms;
+}
