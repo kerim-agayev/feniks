@@ -1,64 +1,64 @@
-import { Suspense, useRef, useEffect, useState } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { useGLTF, Float, Sparkles } from '@react-three/drei'
+import { Suspense, useRef, useEffect, useMemo } from 'react'
+import { Canvas } from '@react-three/fiber'
+import { useGLTF, OrbitControls, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 
 function PhoenixModel() {
   const { scene } = useGLTF('/models/phoenix.glb')
-  const ref = useRef<THREE.Group>(null)
 
-  useEffect(() => {
-    // Center the model and normalize its scale
-    const box = new THREE.Box3().setFromObject(scene)
+  // Clone scene so we can safely modify it
+  const clonedScene = useMemo(() => {
+    const clone = scene.clone(true)
+
+    // Compute bounding box
+    const box = new THREE.Box3().setFromObject(clone)
     const size = new THREE.Vector3()
     const center = new THREE.Vector3()
     box.getSize(size)
     box.getCenter(center)
 
-    // Offset to center
-    scene.position.sub(center)
-
-    // Normalize scale so max dimension = 2
+    // Normalize: scale so max dimension = 2, then center
     const maxDim = Math.max(size.x, size.y, size.z)
-    if (maxDim > 0) {
-      const scale = 2 / maxDim
-      scene.scale.multiplyScalar(scale)
-    }
+    const scaleFactor = maxDim > 0 ? 2 / maxDim : 1
+
+    // Create a wrapper group that handles centering and scaling
+    const wrapper = new THREE.Group()
+    wrapper.add(clone)
+
+    // First scale
+    wrapper.scale.setScalar(scaleFactor)
+
+    // Then offset to center (need to account for scale)
+    clone.position.set(
+      -center.x,
+      -center.y,
+      -center.z
+    )
+
+    return wrapper
   }, [scene])
 
-  useFrame((_, delta) => {
-    if (ref.current) {
-      ref.current.rotation.y += delta * 0.15
-    }
-  })
-
-  return (
-    <Float speed={1.2} rotationIntensity={0.2} floatIntensity={0.4}>
-      <group ref={ref}>
-        <primitive object={scene} />
-      </group>
-    </Float>
-  )
+  return <primitive object={clonedScene} />
 }
 
 function EmberParticles() {
   return (
     <>
       <Sparkles
-        count={150}
-        scale={4}
-        size={3}
+        count={120}
+        scale={3.5}
+        size={2.5}
         speed={0.3}
         color="#C45E1A"
-        opacity={0.6}
+        opacity={0.5}
       />
       <Sparkles
-        count={80}
+        count={60}
         scale={3}
-        size={2}
-        speed={0.5}
+        size={1.5}
+        speed={0.4}
         color="#8B0000"
-        opacity={0.4}
+        opacity={0.3}
       />
     </>
   )
@@ -94,19 +94,19 @@ export function PhoenixHero() {
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Suspense fallback={<LoadingFallback />}>
         <Canvas
-          camera={{ position: [0, 0, 5], fov: 40 }}
+          camera={{ position: [0, 0, 4], fov: 40 }}
           style={{ background: 'transparent' }}
           gl={{ alpha: true, antialias: true }}
         >
-          <ambientLight intensity={0.3} />
+          <ambientLight intensity={0.4} />
           <directionalLight
             position={[3, 5, 2]}
-            intensity={1.2}
+            intensity={1.5}
             color="#C45E1A"
           />
           <directionalLight
             position={[-3, 2, -2]}
-            intensity={0.3}
+            intensity={0.4}
             color="#4466ff"
           />
           <pointLight
@@ -117,6 +117,14 @@ export function PhoenixHero() {
           />
           <PhoenixModel />
           <EmberParticles />
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            autoRotate
+            autoRotateSpeed={1.5}
+            minPolarAngle={Math.PI / 3}
+            maxPolarAngle={Math.PI / 1.5}
+          />
         </Canvas>
       </Suspense>
     </div>
